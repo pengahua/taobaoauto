@@ -164,6 +164,61 @@ button {
   line-height: 1.5;
 }
 
+.queue {
+  margin-bottom: 22px;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.sectionTitle span {
+  color: #65777f;
+  font-size: 13px;
+}
+
+.sectionTitle strong {
+  font-size: 18px;
+}
+
+.queueRows {
+  display: grid;
+  gap: 10px;
+}
+
+.queueRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid #dce5e8;
+  border-radius: 8px;
+  background: white;
+  padding: 14px 16px;
+}
+
+.queueRow strong {
+  display: block;
+  font-size: 15px;
+}
+
+.queueRow p {
+  margin: 6px 0 0;
+  color: #52656d;
+}
+
+.queueRow span {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #fff3dc;
+  color: #8a5a00;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

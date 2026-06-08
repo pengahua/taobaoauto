@@ -19,6 +19,19 @@ export type PolicyDecision = {
   reasons: string[];
 };
 
+export type ExceptionTask = {
+  id: string;
+  type: string;
+  title: string;
+  severity: string;
+  owner_role: string;
+  next_action: string;
+};
+
+export type ExceptionTaskList = {
+  items: ExceptionTask[];
+};
+
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000/api";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
@@ -54,3 +67,6 @@ export function evaluateShipmentPolicy(): Promise<PolicyDecision> {
   });
 }
 
+export function getExceptionTasks(): Promise<ExceptionTaskList> {
+  return request<ExceptionTaskList>("/tasks/exceptions");
+}

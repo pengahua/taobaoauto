@@ -10,9 +10,11 @@ import {
 } from "lucide-react";
 import {
   DashboardSummary,
+  ExceptionTask,
   PolicyDecision,
   evaluateShipmentPolicy,
   getDashboardSummary,
+  getExceptionTasks,
 } from "./lib/api";
 
 const sections = [
@@ -77,16 +79,18 @@ const fallbackSummary: DashboardSummary = {
 export function App() {
   const [summary, setSummary] = useState<DashboardSummary>(fallbackSummary);
   const [policy, setPolicy] = useState<PolicyDecision | null>(null);
+  const [exceptions, setExceptions] = useState<ExceptionTask[]>([]);
   const [apiError, setApiError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
 
-    Promise.all([getDashboardSummary(), evaluateShipmentPolicy()])
-      .then(([dashboard, decision]) => {
+    Promise.all([getDashboardSummary(), evaluateShipmentPolicy(), getExceptionTasks()])
+      .then(([dashboard, decision, taskList]) => {
         if (!mounted) return;
         setSummary(dashboard);
         setPolicy(decision);
+        setExceptions(taskList.items);
         setApiError(null);
       })
       .catch((error: Error) => {
@@ -159,6 +163,24 @@ export function App() {
           </div>
         </section>
 
+        <section className="queue">
+          <div className="sectionTitle">
+            <span>异常队列</span>
+            <strong>{exceptions.length} 个阻断项</strong>
+          </div>
+          <div className="queueRows">
+            {exceptions.map((item) => (
+              <article key={item.id} className="queueRow">
+                <div>
+                  <strong>{item.title}</strong>
+                  <p>{item.next_action}</p>
+                </div>
+                <span>{item.owner_role}</span>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section className="grid">
           {sections.map((section) => (
             <article key={section.title} className="card">
@@ -177,4 +199,3 @@ export function App() {
     </main>
   );
 }
-
