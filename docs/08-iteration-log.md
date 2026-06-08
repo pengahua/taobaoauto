@@ -31,3 +31,15 @@
 - Add exception queue storage and UI data binding.
 - Add prompt/RAG redaction pipeline.
 
+## 2026-06-08 - Sprint 0 / Autonomous Loop
+
+### Completed
+
+- Added autonomous operating model for product, backend, AI, risk, frontend, QA, and SRE roles.
+- Added iteration loop script that starts local services and runs QA smoke checks.
+- Added prioritized backlog for the next implementation wave.
+
+### Principle
+
+No iteration is complete until the loop passes: tests, build, API health, dashboard API, browser smoke, and git status review.
+

@@ -47,3 +47,9 @@ Smoke validation:
 ```powershell
 .\scripts\qa-smoke.ps1
 ```
+
+Autonomous iteration loop:
+
+```powershell
+.\scripts\iteration-loop.ps1
+```
