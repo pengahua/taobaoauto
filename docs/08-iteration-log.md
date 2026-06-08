@@ -67,3 +67,28 @@ No iteration is complete until the loop passes: tests, build, API health, dashbo
 - Add persistent API call log wrapper for TOP adapters.
 - Add real order pull adapter boundary and fixture-based contract tests.
 - Add exception queue persistence instead of static seed data.
+
+## 2026-06-08 - Sprint 1 / Safety Persistence
+
+### Completed
+
+- Added persistent models for API call logs, exception tasks, and kill switches.
+- Added repositories for API logs, exception tasks, and kill switches.
+- Added Taobao TOP client and order adapter request preparation.
+- Added platform API proxy recording for signed TOP requests.
+- Added risk kill-switch API and frontend binding.
+- Moved exception queue from static response to database-backed seed/read flow.
+- Cleaned the frontend console source into a readable UTF-8 implementation.
+
+### Validation
+
+- Backend adapter and API log tests added.
+- Risk kill-switch API tests added.
+- QA smoke script now checks risk kill-switch API.
+
+### Next
+
+- Add a migration tool and versioned schema changes.
+- Implement real TOP HTTP execution behind the proxy with timeout and retry policy.
+- Add persisted order workbench API and UI table.
+- Add shop token storage with encrypted fields.

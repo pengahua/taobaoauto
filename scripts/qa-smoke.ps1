@@ -26,5 +26,10 @@ if ($dashboard.StatusCode -ne 200) {
   throw "Dashboard summary check failed"
 }
 
-Write-Host "[qa] passed"
+Write-Host "[qa] risk kill switches"
+$risk = Invoke-WebRequest -UseBasicParsing "http://localhost:8000/api/risk/kill-switches" -TimeoutSec 10
+if ($risk.StatusCode -ne 200) {
+  throw "Risk kill switch check failed"
+}
 
+Write-Host "[qa] passed"

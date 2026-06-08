@@ -11,10 +11,12 @@ import {
 import {
   DashboardSummary,
   ExceptionTask,
+  KillSwitchState,
   PolicyDecision,
   evaluateShipmentPolicy,
   getDashboardSummary,
   getExceptionTasks,
+  getKillSwitches,
 } from "./lib/api";
 
 const sections = [
@@ -80,17 +82,24 @@ export function App() {
   const [summary, setSummary] = useState<DashboardSummary>(fallbackSummary);
   const [policy, setPolicy] = useState<PolicyDecision | null>(null);
   const [exceptions, setExceptions] = useState<ExceptionTask[]>([]);
+  const [killSwitches, setKillSwitches] = useState<KillSwitchState | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
 
-    Promise.all([getDashboardSummary(), evaluateShipmentPolicy(), getExceptionTasks()])
-      .then(([dashboard, decision, taskList]) => {
+    Promise.all([
+      getDashboardSummary(),
+      evaluateShipmentPolicy(),
+      getExceptionTasks(),
+      getKillSwitches(),
+    ])
+      .then(([dashboard, decision, taskList, switches]) => {
         if (!mounted) return;
         setSummary(dashboard);
         setPolicy(decision);
         setExceptions(taskList.items);
+        setKillSwitches(switches);
         setApiError(null);
       })
       .catch((error: Error) => {
@@ -107,6 +116,12 @@ export function App() {
     if (apiError) return "API 离线";
     return summary.service_status === "ok" ? "API 在线" : "只读试运行";
   }, [apiError, summary.service_status]);
+
+  const riskStatus = useMemo(() => {
+    if (killSwitches?.global_pause) return "全局暂停";
+    if (killSwitches?.refund_pause) return "退款自动化暂停";
+    return summary.risk_policy;
+  }, [killSwitches, summary.risk_policy]);
 
   return (
     <main className="shell">
@@ -157,9 +172,12 @@ export function App() {
             </p>
           </div>
           <div>
-            <span>风险策略</span>
-            <strong>{summary.risk_policy}</strong>
-            <p>{summary.audit_policy}</p>
+            <span>熔断控制</span>
+            <strong>{riskStatus}</strong>
+            <p>
+              {summary.audit_policy}；发货暂停：
+              {killSwitches?.shipment_pause ? "是" : "否"}
+            </p>
           </div>
         </section>
 

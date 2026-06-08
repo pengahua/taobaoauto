@@ -32,6 +32,15 @@ export type ExceptionTaskList = {
   items: ExceptionTask[];
 };
 
+export type KillSwitchState = {
+  store_id: string;
+  global_pause: boolean;
+  customer_message_pause: boolean;
+  waybill_pause: boolean;
+  shipment_pause: boolean;
+  refund_pause: boolean;
+};
+
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000/api";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
@@ -69,4 +78,8 @@ export function evaluateShipmentPolicy(): Promise<PolicyDecision> {
 
 export function getExceptionTasks(): Promise<ExceptionTaskList> {
   return request<ExceptionTaskList>("/tasks/exceptions");
+}
+
+export function getKillSwitches(): Promise<KillSwitchState> {
+  return request<KillSwitchState>("/risk/kill-switches");
 }
