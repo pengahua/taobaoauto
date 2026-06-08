@@ -9,10 +9,12 @@ import {
   Truck,
 } from "lucide-react";
 import {
+  AutoReplyResponse,
   DashboardSummary,
   ExceptionTask,
   KillSwitchState,
   PolicyDecision,
+  createAutoReply,
   evaluateShipmentPolicy,
   getDashboardSummary,
   getExceptionTasks,
@@ -84,6 +86,9 @@ export function App() {
   const [exceptions, setExceptions] = useState<ExceptionTask[]>([]);
   const [killSwitches, setKillSwitches] = useState<KillSwitchState | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [buyerMessage, setBuyerMessage] = useState("我的会员怎么还没开通？订单号 123456789012345");
+  const [autoReply, setAutoReply] = useState<AutoReplyResponse | null>(null);
+  const [replyLoading, setReplyLoading] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -122,6 +127,29 @@ export function App() {
     if (killSwitches?.refund_pause) return "退款自动化暂停";
     return summary.risk_policy;
   }, [killSwitches, summary.risk_policy]);
+
+  const testAutoReply = () => {
+    setReplyLoading(true);
+    createAutoReply({
+      store_id: "demo-store",
+      thread_id: "demo-thread",
+      buyer_message: buyerMessage,
+      order_tid: "demo-tid",
+      verified_facts: {
+        order_status: "已付款",
+        entitlement_status: "未开通",
+        sku: "VIP 月卡",
+      },
+      allow_auto_send: false,
+      conversation_history: [],
+    })
+      .then((response) => {
+        setAutoReply(response);
+      })
+      .finally(() => {
+        setReplyLoading(false);
+      });
+  };
 
   return (
     <main className="shell">
@@ -196,6 +224,32 @@ export function App() {
                 <span>{item.owner_role}</span>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section className="replyLab">
+          <div className="sectionTitle">
+            <span>DeepSeek 自动回复实验室</span>
+            <strong>{autoReply ? autoReply.provider : "待测试"}</strong>
+          </div>
+          <div className="replyPanel">
+            <textarea
+              value={buyerMessage}
+              onChange={(event) => setBuyerMessage(event.target.value)}
+              aria-label="买家消息"
+            />
+            <button type="button" onClick={testAutoReply} disabled={replyLoading}>
+              {replyLoading ? "生成中" : "生成回复"}
+            </button>
+            {autoReply ? (
+              <div className="replyResult">
+                <span>
+                  {autoReply.intent} / {autoReply.risk_level} / {autoReply.decision}
+                </span>
+                <p>{autoReply.draft}</p>
+                <small>{autoReply.escalation_reason ?? autoReply.next_action}</small>
+              </div>
+            ) : null}
           </div>
         </section>
 

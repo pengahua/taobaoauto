@@ -92,3 +92,27 @@ No iteration is complete until the loop passes: tests, build, API health, dashbo
 - Implement real TOP HTTP execution behind the proxy with timeout and retry policy.
 - Add persisted order workbench API and UI table.
 - Add shop token storage with encrypted fields.
+
+## 2026-06-09 - Sprint 2 / DeepSeek Auto Reply
+
+### Completed
+
+- Added configurable DeepSeek provider settings.
+- Added DeepSeek chat completion client using OpenAI-compatible `/chat/completions`.
+- Added LLM redaction for phone numbers, long order IDs, and sensitive fact keys.
+- Added customer auto-reply orchestration with intent classification, risk classification, fallback reply, and auto-send gate.
+- Added `/api/ai/customer-auto-reply` endpoint.
+- Added frontend DeepSeek auto-reply lab for buyer-message testing.
+
+### Safety
+
+- Auto-send remains disabled by default.
+- High-risk keywords such as refund, complaint, address change, compensation, and platform intervention force human review.
+- DeepSeek receives redacted buyer messages and redacted facts only.
+- Without `DEEPSEEK_API_KEY`, the system uses deterministic safe fallback replies.
+
+### Validation
+
+- Added tests for redaction, intent/risk classification, fallback reply, and API endpoint.
+- Added Qianniu message send request preparation contract.
+- Added AI auto-reply endpoint to QA smoke gate.

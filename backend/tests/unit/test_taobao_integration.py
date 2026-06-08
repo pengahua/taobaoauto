@@ -1,6 +1,8 @@
 from urllib.parse import parse_qs, urlparse
 
 from app.integrations.taobao.oauth import build_authorization_url
+from app.integrations.taobao.client import TopClient
+from app.integrations.taobao.qianniu import QianniuMessageAdapter
 from app.integrations.taobao.signing import attach_signature, sign_top_request
 
 
@@ -48,3 +50,17 @@ def test_attach_signature_returns_copy() -> None:
     assert "sign" in signed
     assert "sign" not in params
 
+
+def test_qianniu_send_message_request_is_signed() -> None:
+    adapter = QianniuMessageAdapter(TopClient(app_key="app", app_secret="secret"))
+
+    prepared = adapter.prepare_send_message_request(
+        session_key="session",
+        receiver_id="buyer-1",
+        content="亲，已为您核实。",
+        biz_id="msg-1",
+    )
+
+    assert prepared.signed_params["method"] == "taobao.jindoucloud.message.send"
+    assert prepared.signed_params["receiver_id"] == "buyer-1"
+    assert "sign" in prepared.signed_params

@@ -34,6 +34,14 @@ cd backend
 python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
+Optional DeepSeek environment:
+
+```powershell
+$env:DEEPSEEK_API_KEY="your_key"
+$env:DEEPSEEK_MODEL="deepseek-chat"
+$env:AI_AUTO_SEND_ENABLED="false"
+```
+
 Frontend:
 
 ```powershell

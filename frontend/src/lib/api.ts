@@ -41,6 +41,30 @@ export type KillSwitchState = {
   refund_pause: boolean;
 };
 
+export type AutoReplyRequest = {
+  store_id: string;
+  thread_id: string;
+  buyer_message: string;
+  order_tid?: string;
+  verified_facts?: Record<string, string>;
+  allow_auto_send?: boolean;
+  conversation_history?: string[];
+};
+
+export type AutoReplyResponse = {
+  draft: string;
+  risk_level: string;
+  auto_send_allowed: boolean;
+  required_facts: string[];
+  escalation_reason: string | null;
+  provider: string;
+  model: string;
+  redacted: boolean;
+  intent: string;
+  decision: string;
+  next_action: string;
+};
+
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000/api";
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
@@ -82,4 +106,11 @@ export function getExceptionTasks(): Promise<ExceptionTaskList> {
 
 export function getKillSwitches(): Promise<KillSwitchState> {
   return request<KillSwitchState>("/risk/kill-switches");
+}
+
+export function createAutoReply(payload: AutoReplyRequest): Promise<AutoReplyResponse> {
+  return request<AutoReplyResponse>("/ai/customer-auto-reply", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }

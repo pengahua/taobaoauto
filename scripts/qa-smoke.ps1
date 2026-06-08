@@ -32,4 +32,19 @@ if ($risk.StatusCode -ne 200) {
   throw "Risk kill switch check failed"
 }
 
+Write-Host "[qa] ai auto reply"
+$replyBody = @{
+  store_id = "qa-store"
+  thread_id = "qa-thread"
+  buyer_message = "membership not activated"
+  verified_facts = @{
+    order_status = "paid"
+    entitlement_status = "not activated"
+  }
+} | ConvertTo-Json -Depth 4
+$reply = Invoke-WebRequest -UseBasicParsing "http://localhost:8000/api/ai/customer-auto-reply" -Method POST -ContentType "application/json; charset=utf-8" -Body $replyBody -TimeoutSec 10
+if ($reply.StatusCode -ne 200) {
+  throw "AI auto reply check failed"
+}
+
 Write-Host "[qa] passed"
